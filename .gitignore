@@ -1,0 +1,29 @@
+# Object files
+*.slo
+*.lo
+*.o
+*.ko
+*.obj
+*.elf
+
+# Shared objects (inc. Windows DLLs)
+*.a
+*.dll
+*.dylib
+*.la
+*.lai
+*.lib
+*.so
+*.so.*
+
+# Executables
+*.app
+*.exe
+*.hex
+*.i*86
+*.out
+*.x86_64
+
+# ino build files
+/.build/
+
