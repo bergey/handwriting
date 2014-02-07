@@ -2,8 +2,10 @@
   chording keyboard code (c) Daniel Bergey 2014
 */
 
-// anything above `threshold` indicates a pressed sensor
-const int threshold = 600;  // voltage divider 50/50 unpressed, 67/33 pressed
+// anything below `threshold` indicates a pressed sensor
+// Life is good if they can all be the same, but hand-sewing isn't that precise
+// Easier to fine-tune here than switching resistors
+const int threshold[] = {480, 256, 256, 256, 256 };
 
 /* keymap in binary order, with thumb as least-significant bit, pinkie on 0x10 */
 const char keymap[] = { ' ', // no keys pressed, do not print
@@ -30,15 +32,21 @@ void loop() {
      // thumb on A0
      if (digitalRead(12)) {
           for(int i=0; i<5; i++) {
-               fingertip_state |= ((analogRead(i) > threshold ? 1 : 0) << i);
+               fingertip_state |= ((analogRead(i) < threshold[i] ? 1 : 0) << i);
+               // debugging
+               Keyboard.print(analogRead(i));
+               Keyboard.print(' ');
           }
+
+          // debugging
+          Keyboard.print("0x");
+          Keyboard.println(String(fingertip_state, HEX));
 
           if (fingertip_state != 0x00) {
                // only lowercase for now
                Keyboard.write(keymap[fingertip_state]);
           }
-         
-          Keyboard.println(analogRead(0));
-          Keyboard.println(fingertip_state);
+
+          delay(1000);
      }
 }
