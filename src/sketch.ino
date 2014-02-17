@@ -18,6 +18,7 @@ const char keymap[] = { ' ', // no keys pressed, do not print
 // Modifier Keys: http://arduino.cc/en/Reference/KeyboardModifiers
 
 int fingertip_state = 0;
+int last_state = 0;
 
 void setup() {
      // Do not need to set input mode for analog pins
@@ -26,6 +27,7 @@ void setup() {
 }
 
 void loop() {
+     last_state = fingertip_state;
      fingertip_state = 0;
 
 // wire fingertip sensors to analog inputs A0 through A4
@@ -34,19 +36,19 @@ void loop() {
           for(int i=0; i<5; i++) {
                fingertip_state |= ((analogRead(i) < threshold[i] ? 1 : 0) << i);
                // debugging
-               Keyboard.print(analogRead(i));
-               Keyboard.print(' ');
+               /* Keyboard.print(analogRead(i)); */
+               /* Keyboard.print(' '); */
           }
 
-          // debugging
-          Keyboard.print("0x");
-          Keyboard.println(String(fingertip_state, HEX));
-
-          if (fingertip_state != 0x00) {
+          if (fingertip_state != 0x00 and fingertip_state != last_state) {
                // only lowercase for now
                Keyboard.write(keymap[fingertip_state]);
+
+               // debugging
+               /* Keyboard.print("0x"); */
+               /* Keyboard.println(String(fingertip_state, HEX)); */
           }
 
-          delay(1000);
+          delay(100);
      }
 }
